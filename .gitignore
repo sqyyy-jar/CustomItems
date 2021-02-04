@@ -13,3 +13,7 @@
 .idea/libraries/Maven__net_md_5_bungeecord_chat_1_16_R0_3.xml
 .idea/workspace.xml
 target/classes/dev/sqyyy/customitems/CustomItems.class
+target/classes/plugin.yml
+target/classes/dev/sqyyy/customitems/commands/GetCommand.class
+target/classes/dev/sqyyy/customitems/CustomItems$1.class
+target/classes/plugin.yml
