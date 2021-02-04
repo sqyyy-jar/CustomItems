@@ -1,4 +1,4 @@
-name: Custom Items
+name: CustomItems
 version: ${project.version}
 main: dev.sqyyy.customitems.CustomItems
 api-version: 1.16
