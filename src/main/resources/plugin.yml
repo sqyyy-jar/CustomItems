@@ -1,0 +1,5 @@
+name: Custom Items
+version: ${project.version}
+main: dev.sqyyy.customitems.CustomItems
+api-version: 1.16
+authors: [ sqyyy ]
