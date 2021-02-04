@@ -41,9 +41,12 @@ public final class CustomItems extends JavaPlugin {
                 this.getLogger().info("Could not create config file!");
                 this.getServer().getPluginManager().disablePlugin(CustomItems.getPlugin(CustomItems.class));
             }
+            config = GsonExplorer.getGson(path);
+            config.save(true);
         }
-
+        //set config to config.json
         config = GsonExplorer.getGson(path);
+        //load item entries
         if (config.has("Items")) {
             for (JsonElement param : config.getAsJsonArray("Items")) {
                 newItems.add(param.getAsString());
