@@ -1,8 +1,0 @@
-name: CustomItems
-version: 1.0-SNAPSHOT
-main: dev.sqyyy.customitems.CustomItems
-api-version: 1.16
-authors: [ sqyyy ]
-commands:
-  get:
-    usage: /<command> <key>
