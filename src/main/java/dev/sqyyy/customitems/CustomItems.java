@@ -4,11 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.sqyyy.customitems.commands.GetCommand;
+import dev.sqyyy.customitems.event.MoveEvent;
 import dev.sqyyyapis.storageexplorers.GsonExplorer;
 import dev.sqyyyapis.storageexplorers.GsonFile;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +43,7 @@ public final class CustomItems extends JavaPlugin {
         baseInit();
         commandsInit();
         pl = this;
+        testEvents();
     }
 
     @Override
@@ -50,7 +52,12 @@ public final class CustomItems extends JavaPlugin {
     }
 
     public final void baseInit() {
-        this.getServer().getPluginManager().registerEvents(new EventListener(), this);
+        this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+            @Override
+            public void run() {
+                Bukkit.getPluginManager().registerEvents(new EventListener(), CustomItems.pl);
+            }
+        }, 20);
         File file = new File(path + "config.json");
         if (!file.exists()) {
             if (!file.getParentFile().mkdirs()) {
@@ -216,5 +223,19 @@ public final class CustomItems extends JavaPlugin {
         nbt.setString("key", key);
         item = CraftItemStack.asBukkitCopy(nmsItem);
         return item;
+    }
+
+    public final void testEvents() {
+        EventHandler.setMoveEvent("zombie_sword", new MoveEvent() {
+            @Override
+            public void onEvent(PlayerMoveEvent e, EquipmentSlot slot) {
+                if (slot.equals(EquipmentSlot.HAND)) {
+                    Particle.DustOptions dust = new Particle.DustOptions(
+                            Color.fromRGB(180, 68, 32), 1);
+                    e.getPlayer().spawnParticle(Particle.REDSTONE, e.getPlayer().getLocation().getX() + Math.random() - 0.5, e.getPlayer().getLocation().getY(),
+                            e.getPlayer().getLocation().getZ() + Math.random() - 0.5, 0, 0, 0, 0, dust);
+                }
+            }
+        });
     }
 }
