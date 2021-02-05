@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EventHandler {
-    public static Map<String, Event> getEventMap() {
+    /*public static Map<String, Event> getEventMap() {
         return eventMap;
-    }
+    }*/
     public static Map<String, InteractEvent> getInteractEventMap() {
         return interactEventMap;
     }
@@ -28,7 +28,7 @@ public class EventHandler {
         return moveEventMap;
     }
 
-    private static final Map<String, Event> eventMap = new HashMap<>();
+    //private static final Map<String, Event> eventMap = new HashMap<>();
     private static final Map<String, InteractEvent> interactEventMap = new HashMap<>();
     private static final Map<String, DamageEvent> damageEventMap = new HashMap<>();
     private static final Map<String, DamageTakeEvent> damageTakeEventMap = new HashMap<>();
@@ -36,9 +36,9 @@ public class EventHandler {
     private static final Map<String, KillEvent> killEventMap = new HashMap<>();
     private static final Map<String, MoveEvent> moveEventMap = new HashMap<>();
 
-    public static void setEvent(String key, Event event) {
+    /*public static void setEvent(String key, Event event) {
         eventMap.put(key, event);
-    }
+    }*/
     public static void setInteractEvent(String key, InteractEvent event) {
         interactEventMap.put(key, event);
     }
