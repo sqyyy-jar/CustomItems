@@ -12,7 +12,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class EventListener implements Listener {
-    @EventHandler
+    /*@EventHandler
     public void onEvent(PlayerEvent e) {
         if (e.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
             ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
@@ -60,7 +60,31 @@ public class EventListener implements Listener {
                     }
                 }
             }
-    }
+        if (e.getPlayer().getInventory().getChestplate() != null)
+            if (e.getPlayer().getInventory().getChestplate().getType() != Material.AIR) {
+                ItemStack item = e.getPlayer().getInventory().getChestplate();
+                net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                NBTTagCompound nbt = nmsItem.getTag();
+                if (nbt != null) {
+                    String key = nbt.getString("key");
+                    if (dev.sqyyy.customitems.EventHandler.getEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
+                    }
+                }
+            }
+        if (e.getPlayer().getInventory().getHelmet() != null)
+            if (e.getPlayer().getInventory().getHelmet().getType() != Material.AIR) {
+                ItemStack item = e.getPlayer().getInventory().getHelmet();
+                net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                NBTTagCompound nbt = nmsItem.getTag();
+                if (nbt != null) {
+                    String key = nbt.getString("key");
+                    if (dev.sqyyy.customitems.EventHandler.getEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
+                    }
+                }
+            }
+    }*/
 
     @EventHandler
     public void onInteractEvent(PlayerInteractEvent e) {
@@ -107,6 +131,30 @@ public class EventListener implements Listener {
                     String key = nbt.getString("key");
                     if (dev.sqyyy.customitems.EventHandler.getInteractEventMap().containsKey(key)) {
                         dev.sqyyy.customitems.EventHandler.getInteractEventMap().get(key).onEvent(e, EquipmentSlot.LEGS);
+                    }
+                }
+            }
+        if (e.getPlayer().getInventory().getChestplate() != null)
+            if (e.getPlayer().getInventory().getChestplate().getType() != Material.AIR) {
+                ItemStack item = e.getPlayer().getInventory().getChestplate();
+                net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                NBTTagCompound nbt = nmsItem.getTag();
+                if (nbt != null) {
+                    String key = nbt.getString("key");
+                    if (dev.sqyyy.customitems.EventHandler.getInteractEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getInteractEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
+                    }
+                }
+            }
+        if (e.getPlayer().getInventory().getHelmet() != null)
+            if (e.getPlayer().getInventory().getHelmet().getType() != Material.AIR) {
+                ItemStack item = e.getPlayer().getInventory().getHelmet();
+                net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                NBTTagCompound nbt = nmsItem.getTag();
+                if (nbt != null) {
+                    String key = nbt.getString("key");
+                    if (dev.sqyyy.customitems.EventHandler.getInteractEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getInteractEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
                     }
                 }
             }
@@ -157,6 +205,30 @@ public class EventListener implements Listener {
                     String key = nbt.getString("key");
                     if (dev.sqyyy.customitems.EventHandler.getMoveEventMap().containsKey(key)) {
                         dev.sqyyy.customitems.EventHandler.getMoveEventMap().get(key).onEvent(e, EquipmentSlot.LEGS);
+                    }
+                }
+            }
+        if (e.getPlayer().getInventory().getChestplate() != null)
+            if (e.getPlayer().getInventory().getChestplate().getType() != Material.AIR) {
+                ItemStack item = e.getPlayer().getInventory().getChestplate();
+                net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                NBTTagCompound nbt = nmsItem.getTag();
+                if (nbt != null) {
+                    String key = nbt.getString("key");
+                    if (dev.sqyyy.customitems.EventHandler.getMoveEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getMoveEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
+                    }
+                }
+            }
+        if (e.getPlayer().getInventory().getHelmet() != null)
+            if (e.getPlayer().getInventory().getHelmet().getType() != Material.AIR) {
+                ItemStack item = e.getPlayer().getInventory().getHelmet();
+                net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                NBTTagCompound nbt = nmsItem.getTag();
+                if (nbt != null) {
+                    String key = nbt.getString("key");
+                    if (dev.sqyyy.customitems.EventHandler.getMoveEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getMoveEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
                     }
                 }
             }
@@ -212,6 +284,30 @@ public class EventListener implements Listener {
                         }
                     }
                 }
+            if (p.getInventory().getChestplate() != null)
+                if (p.getInventory().getChestplate().getType() != Material.AIR) {
+                    ItemStack item = p.getInventory().getChestplate();
+                    net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                    NBTTagCompound nbt = nmsItem.getTag();
+                    if (nbt != null) {
+                        String key = nbt.getString("key");
+                        if (dev.sqyyy.customitems.EventHandler.getKillEventMap().containsKey(key)) {
+                            dev.sqyyy.customitems.EventHandler.getKillEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
+                        }
+                    }
+                }
+            if (p.getInventory().getHelmet() != null)
+                if (p.getInventory().getHelmet().getType() != Material.AIR) {
+                    ItemStack item = p.getInventory().getHelmet();
+                    net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                    NBTTagCompound nbt = nmsItem.getTag();
+                    if (nbt != null) {
+                        String key = nbt.getString("key");
+                        if (dev.sqyyy.customitems.EventHandler.getKillEventMap().containsKey(key)) {
+                            dev.sqyyy.customitems.EventHandler.getKillEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
+                        }
+                    }
+                }
         }
     }
 
@@ -261,6 +357,30 @@ public class EventListener implements Listener {
                     String key = nbt.getString("key");
                     if (dev.sqyyy.customitems.EventHandler.getDeathEventMap().containsKey(key)) {
                         dev.sqyyy.customitems.EventHandler.getDeathEventMap().get(key).onEvent(e, EquipmentSlot.LEGS);
+                    }
+                }
+            }
+        if (p.getInventory().getChestplate() != null)
+            if (p.getInventory().getChestplate().getType() != Material.AIR) {
+                ItemStack item = p.getInventory().getChestplate();
+                net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                NBTTagCompound nbt = nmsItem.getTag();
+                if (nbt != null) {
+                    String key = nbt.getString("key");
+                    if (dev.sqyyy.customitems.EventHandler.getDeathEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getDeathEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
+                    }
+                }
+            }
+        if (p.getInventory().getHelmet() != null)
+            if (p.getInventory().getHelmet().getType() != Material.AIR) {
+                ItemStack item = p.getInventory().getHelmet();
+                net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                NBTTagCompound nbt = nmsItem.getTag();
+                if (nbt != null) {
+                    String key = nbt.getString("key");
+                    if (dev.sqyyy.customitems.EventHandler.getDeathEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getDeathEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
                     }
                 }
             }
@@ -316,6 +436,30 @@ public class EventListener implements Listener {
                         }
                     }
                 }
+            if (p.getInventory().getChestplate() != null)
+                if (p.getInventory().getChestplate().getType() != Material.AIR) {
+                    ItemStack item = p.getInventory().getChestplate();
+                    net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                    NBTTagCompound nbt = nmsItem.getTag();
+                    if (nbt != null) {
+                        String key = nbt.getString("key");
+                        if (dev.sqyyy.customitems.EventHandler.getDamageEventMap().containsKey(key)) {
+                            dev.sqyyy.customitems.EventHandler.getDamageEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
+                        }
+                    }
+                }
+            if (p.getInventory().getHelmet() != null)
+                if (p.getInventory().getHelmet().getType() != Material.AIR) {
+                    ItemStack item = p.getInventory().getHelmet();
+                    net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                    NBTTagCompound nbt = nmsItem.getTag();
+                    if (nbt != null) {
+                        String key = nbt.getString("key");
+                        if (dev.sqyyy.customitems.EventHandler.getDamageEventMap().containsKey(key)) {
+                            dev.sqyyy.customitems.EventHandler.getDamageEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
+                        }
+                    }
+                }
         }
     }
 
@@ -366,6 +510,30 @@ public class EventListener implements Listener {
                         String key = nbt.getString("key");
                         if (dev.sqyyy.customitems.EventHandler.getDamageTakeEventMap().containsKey(key)) {
                             dev.sqyyy.customitems.EventHandler.getDamageTakeEventMap().get(key).onEvent(e, EquipmentSlot.LEGS);
+                        }
+                    }
+                }
+            if (p.getInventory().getChestplate() != null)
+                if (p.getInventory().getChestplate().getType() != Material.AIR) {
+                    ItemStack item = p.getInventory().getChestplate();
+                    net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                    NBTTagCompound nbt = nmsItem.getTag();
+                    if (nbt != null) {
+                        String key = nbt.getString("key");
+                        if (dev.sqyyy.customitems.EventHandler.getDamageTakeEventMap().containsKey(key)) {
+                            dev.sqyyy.customitems.EventHandler.getDamageTakeEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
+                        }
+                    }
+                }
+            if (p.getInventory().getHelmet() != null)
+                if (p.getInventory().getHelmet().getType() != Material.AIR) {
+                    ItemStack item = p.getInventory().getHelmet();
+                    net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                    NBTTagCompound nbt = nmsItem.getTag();
+                    if (nbt != null) {
+                        String key = nbt.getString("key");
+                        if (dev.sqyyy.customitems.EventHandler.getDamageTakeEventMap().containsKey(key)) {
+                            dev.sqyyy.customitems.EventHandler.getDamageTakeEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
                         }
                     }
                 }
