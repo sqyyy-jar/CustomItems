@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -119,7 +120,6 @@ public final class CustomItems extends JavaPlugin {
     }
 
     public static ItemStack getItem(Player player, String key) {
-        if (!CustomItems.pl.newItems.contains(key)) return null;
         ItemStack item = new ItemStack(Material.AIR);
         GsonFile file = GsonExplorer.getGson(CustomItems.pl.path + "items/" + key.toLowerCase() + ".json");
         if (!file.has("Material")) {
@@ -184,6 +184,26 @@ public final class CustomItems extends JavaPlugin {
         }
         if (file.has("CustomModelData")) {
             meta.setCustomModelData(file.get("CustomModelData").getAsInt());
+        }
+        if (file.has("ItemFlags")) {
+            if (file.get("ItemFlags").isJsonArray()) {
+                for (JsonElement param : file.get("ItemFlags").getAsJsonArray()) {
+                    meta.addItemFlags(ItemFlag.valueOf(param.getAsString().toUpperCase()));
+                }
+            } else {
+                player.sendMessage("ObjectTypeException: caused by items/" + key + ".json: \"ItemFlags must be an array!\"");
+            }
+        }
+        if (file.has("Lore")) {
+            if (file.get("Lore").isJsonArray()) {
+                List<String> lore = new ArrayList<>();
+                for (JsonElement param : file.get("Lore").getAsJsonArray()) {
+                    lore.add(ChatColor.translateAlternateColorCodes('&', param.getAsString()));
+                }
+                meta.setLore(lore);
+            } else {
+                player.sendMessage("ObjectTypeException: caused by items/" + key + ".json: \"Lore must be an array!\"");
+            }
         }
         item.setItemMeta(meta);
         return item;
