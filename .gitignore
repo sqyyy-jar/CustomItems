@@ -18,3 +18,14 @@ target/classes/dev/sqyyy/customitems/commands/GetCommand.class
 target/classes/dev/sqyyy/customitems/CustomItems$1.class
 target/classes/plugin.yml
 .idea/uiDesigner.xml
+target/classes/dev/sqyyy/customitems/CustomItems$2.class
+target/classes/dev/sqyyy/customitems/CustomItems$3.class
+target/classes/dev/sqyyy/customitems/event/DamageEvent.class
+target/classes/dev/sqyyy/customitems/event/DamageTakeEvent.class
+target/classes/dev/sqyyy/customitems/event/DeathEvent.class
+target/classes/dev/sqyyy/customitems/event/Event.class
+target/classes/dev/sqyyy/customitems/event/InteractEvent.class
+target/classes/dev/sqyyy/customitems/event/KillEvent.class
+target/classes/dev/sqyyy/customitems/event/MoveEvent.class
+target/classes/dev/sqyyy/customitems/EventHandler.class
+target/classes/dev/sqyyy/customitems/EventListener.class
