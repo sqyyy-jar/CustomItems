@@ -17,3 +17,4 @@ target/classes/plugin.yml
 target/classes/dev/sqyyy/customitems/commands/GetCommand.class
 target/classes/dev/sqyyy/customitems/CustomItems$1.class
 target/classes/plugin.yml
+.idea/uiDesigner.xml
