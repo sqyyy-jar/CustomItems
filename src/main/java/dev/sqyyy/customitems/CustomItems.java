@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import dev.sqyyy.customitems.commands.GetCommand;
 import dev.sqyyyapis.storageexplorers.GsonExplorer;
 import dev.sqyyyapis.storageexplorers.GsonFile;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -13,6 +14,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
@@ -48,6 +50,7 @@ public final class CustomItems extends JavaPlugin {
     }
 
     public final void baseInit() {
+        this.getServer().getPluginManager().registerEvents(new EventListener(), this);
         File file = new File(path + "config.json");
         if (!file.exists()) {
             if (!file.getParentFile().mkdirs()) {
@@ -206,6 +209,12 @@ public final class CustomItems extends JavaPlugin {
             }
         }
         item.setItemMeta(meta);
+
+        net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+        NBTTagCompound nbt = nmsItem.getTag();
+        if (nbt == null) return null;
+        nbt.setString("key", key);
+        item = CraftItemStack.asBukkitCopy(nmsItem);
         return item;
     }
 }
