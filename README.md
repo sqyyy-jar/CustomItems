@@ -14,7 +14,7 @@ Json:
   "Lore": ["line1", "line2", etc], (adds a lore to the item - not necessary)
   "Recipe": {
     "shape": [" R ", " R ", " S "], (The shape stands for the 3x3 grid in the craftingtable)
-		"Items": [{"char":'R', "Material": "ROTTEN_FLESH"}, {"char":'S', "Material": "STICK"}] //replace the chars used before with the Materials from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+    "Items": [{"char":'R', "Material": "ROTTEN_FLESH"}, {"char":'S', "Material": "STICK"}] //replace the chars used before with the Materials from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
   }, //not necessary
   "Attributes": [
     {
