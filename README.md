@@ -3,6 +3,7 @@ Spigot Plugin to create 1.16+ Custom items with Json
 
 Examples:
 
+Json:
 ```
 {
   "DisplayName": "The displayname of the item", (use &char to colorize the name)
@@ -22,4 +23,14 @@ Examples:
   "texture": "texture Base64 String" (Changes the skin of a playerhead to this value - not necessary - use skingenerators like mineskin.org or from https://sessionserver.mojang.com/session/minecraft/profile/ + uuid
      + ?unsigned=false and get the texture)
 }
+```
+
+Java:
+```java
+dev.sqyyy.customitems.EventHandler.setEvent(String itemfilename, new dev.sqyyy.customitems.event.Event() { //use as Event any event in the given package
+  @Override
+  public void onEvent() {
+    //do something...
+  }
+}); //the code will execute if you execute the used event
 ```
