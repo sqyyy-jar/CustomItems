@@ -3,29 +3,43 @@ package dev.sqyyy.customitems;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import dev.sqyyy.customitems.commands.GetCommand;
+import dev.sqyyy.customitems.event.DamageTakeEvent;
+import dev.sqyyy.customitems.event.InteractEvent;
 import dev.sqyyy.customitems.event.MoveEvent;
 import dev.sqyyyapis.storageexplorers.GsonExplorer;
 import dev.sqyyyapis.storageexplorers.GsonFile;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +48,7 @@ public final class CustomItems extends JavaPlugin {
 
     public final String prefix = "[CustomItems] ";
     public final List<String> newItems = new ArrayList<>();
-    public final String path = "./plugins/CustomItems/";
+    public static String path = "./plugins/CustomItems/";
     public GsonFile config;
     public static CustomItems pl;
 
@@ -42,8 +56,42 @@ public final class CustomItems extends JavaPlugin {
     public void onEnable() {
         baseInit();
         commandsInit();
+        recipesInit();
         pl = this;
         testEvents();
+    }
+
+    private void recipesInit() {
+        for (String newItem : newItems) {
+            GsonFile f = GsonExplorer.getGson(path + "items/" + newItem + ".json");
+            if (f.has("Recipe")) {
+                if (f.get("Recipe").isJsonObject()) {
+                    JsonObject object = f.get("Recipe").getAsJsonObject();
+                    NamespacedKey key = new NamespacedKey(this, newItem);
+                    ItemStack item = getItem(newItem);
+                    if (item == null) continue;
+                    ShapedRecipe recipe = new ShapedRecipe(key, item);
+                    if (!object.has("shape")) continue;
+                    if (!object.get("shape").isJsonArray()) continue;
+                    recipe.shape(object.get("shape").getAsJsonArray().get(0).getAsString(),object.get("shape").getAsJsonArray().get(1).getAsString(),object.get("shape").getAsJsonArray().get(2).getAsString());
+                    if (!object.has("Items")) continue;
+                    if (!object.get("Items").isJsonArray()) continue;
+                    for (JsonElement use : object.get("Items").getAsJsonArray()) {
+                        if (!use.isJsonObject()) continue;
+                        JsonObject obj = use.getAsJsonObject();
+                        if (!obj.has("char") || !obj.has("Material")) continue;
+                        try {
+                            recipe.setIngredient(obj.get("char").getAsCharacter(), Material.valueOf(obj.get("Material").getAsString().toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            continue;
+                        }
+                    }
+                    Bukkit.addRecipe(recipe);
+                } else {
+                    System.out.println("ObjectTypeException: caused by items/" + newItem + ".json: \"Slots must be an array!\"");
+                }
+            }
+        }
     }
 
     @Override
@@ -52,12 +100,7 @@ public final class CustomItems extends JavaPlugin {
     }
 
     public final void baseInit() {
-        this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            @Override
-            public void run() {
-                Bukkit.getPluginManager().registerEvents(new EventListener(), CustomItems.pl);
-            }
-        }, 20);
+        Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         File file = new File(path + "config.json");
         if (!file.exists()) {
             if (!file.getParentFile().mkdirs()) {
@@ -129,17 +172,17 @@ public final class CustomItems extends JavaPlugin {
         });
     }
 
-    public static ItemStack getItem(Player player, String key) {
+    public static ItemStack getItem(String key) {
         ItemStack item = new ItemStack(Material.AIR);
-        GsonFile file = GsonExplorer.getGson(CustomItems.pl.path + "items/" + key.toLowerCase() + ".json");
+        GsonFile file = GsonExplorer.getGson(path + "items/" + key.toLowerCase() + ".json");
         if (!file.has("Material")) {
-            player.sendMessage("NoMaterialException: caused by items/" + key.toLowerCase() + ".json");
+            System.out.println("NoMaterialException: caused by items/" + key.toLowerCase() + ".json");
             return null;
         }
         try {
             item.setType(Material.valueOf(file.get("Material").getAsString().toUpperCase()));
         } catch (IllegalArgumentException e) {
-            player.sendMessage("IllegalArgumentException: caused by items/" + key + ".json: \"Non valid Material!\"");
+            System.out.println("IllegalArgumentException: caused by items/" + key + ".json: \"Non valid Material!\"");
             return null;
         }
         ItemMeta meta = item.getItemMeta();
@@ -171,7 +214,7 @@ public final class CustomItems extends JavaPlugin {
                                                         EquipmentSlot.valueOf(param2.getAsString().toUpperCase())));
                                     }
                                 } else {
-                                    player.sendMessage("ObjectTypeException: caused by items/" + key + ".json: \"Slots must be an array!\"");
+                                    System.out.println("ObjectTypeException: caused by items/" + key + ".json: \"Slots must be an array!\"");
                                 }
                             } else {
                                 meta.addAttributeModifier(Attribute.valueOf(object.get("id").getAsString().toUpperCase()),
@@ -179,14 +222,14 @@ public final class CustomItems extends JavaPlugin {
                                                 object.get("value").getAsDouble(), AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND));
                             }
                         } else {
-                            player.sendMessage("IllegalArgumentException: caused by items/" + key + ".json: \"Could not find field name, value or id!\"");
+                            System.out.println("IllegalArgumentException: caused by items/" + key + ".json: \"Could not find field name, value or id!\"");
                         }
                     } catch (IllegalArgumentException exception) {
-                        player.sendMessage("IllegalArgumentException: caused by items/" + key + ".json: \"Non valid Attribute!\"");
+                        System.out.println("IllegalArgumentException: caused by items/" + key + ".json: \"Non valid Attribute!\"");
                     }
                 }
             } else {
-                player.sendMessage("ObjectTypeException: caused by items/" + key + ".json: \"Attributes must be an array!\"");
+                System.out.println("ObjectTypeException: caused by items/" + key + ".json: \"Attributes must be an array!\"");
             }
         }
         if (file.has("Unbreakable")) {
@@ -201,7 +244,7 @@ public final class CustomItems extends JavaPlugin {
                     meta.addItemFlags(ItemFlag.valueOf(param.getAsString().toUpperCase()));
                 }
             } else {
-                player.sendMessage("ObjectTypeException: caused by items/" + key + ".json: \"ItemFlags must be an array!\"");
+                System.out.println("ObjectTypeException: caused by items/" + key + ".json: \"ItemFlags must be an array!\"");
             }
         }
         if (file.has("Lore")) {
@@ -212,11 +255,41 @@ public final class CustomItems extends JavaPlugin {
                 }
                 meta.setLore(lore);
             } else {
-                player.sendMessage("ObjectTypeException: caused by items/" + key + ".json: \"Lore must be an array!\"");
+                System.out.println("ObjectTypeException: caused by items/" + key + ".json: \"Lore must be an array!\"");
             }
         }
         item.setItemMeta(meta);
+        if (item.getType().equals(Material.PLAYER_HEAD)) {
+            if (file.has("texture")) {
+                String texture = file.get("texture").getAsString();
+                SkullMeta skull = (SkullMeta)meta;
+                GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+                profile.getProperties().put("textures", new Property("textures", texture));
 
+                try {
+                    Field field = skull.getClass().getDeclaredField("profile");
+                    field.setAccessible(true);
+                    field.set(skull, profile);
+                    field.setAccessible(false);
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                item.setItemMeta(skull);
+            }
+        }
+        if (item.getType().name().toLowerCase().contains("leather_")) {
+            if (file.has("Color")) {
+                if (file.get("Color").isJsonObject()) {
+                    int r = file.get("Color").getAsJsonObject().get("r").getAsInt();
+                    int g = file.get("Color").getAsJsonObject().get("g").getAsInt();
+                    int b = file.get("Color").getAsJsonObject().get("b").getAsInt();
+                    LeatherArmorMeta armor = (LeatherArmorMeta)item.getItemMeta();
+                    armor.setColor(Color.fromRGB(r,g,b));
+                    armor.addItemFlags(ItemFlag.HIDE_DYE);
+                    item.setItemMeta(armor);
+                }
+            }
+        }
         net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
         NBTTagCompound nbt = nmsItem.getTag();
         if (nbt == null) return null;
@@ -234,6 +307,27 @@ public final class CustomItems extends JavaPlugin {
                             Color.fromRGB(180, 68, 32), 1);
                     e.getPlayer().spawnParticle(Particle.REDSTONE, e.getPlayer().getLocation().getX() + Math.random() - 0.5, e.getPlayer().getLocation().getY(),
                             e.getPlayer().getLocation().getZ() + Math.random() - 0.5, 0, 0, 0, 0, dust);
+                }
+            }
+        });
+        EventHandler.setInteractEvent("gravity_artifact", new InteractEvent() {
+            @Override
+            public void onEvent(PlayerInteractEvent e, EquipmentSlot slot) {
+                if (slot != EquipmentSlot.HAND) return;
+                e.getPlayer().setGravity(!e.getPlayer().hasGravity());
+                e.setCancelled(true);
+            }
+        });
+        EventHandler.setDamageTakeEvent("dragon_chestplate", new DamageTakeEvent() {
+            @Override
+            public void onEvent(EntityDamageEvent e, EquipmentSlot slot) {
+                if (slot != EquipmentSlot.CHEST) return;
+                if (e.getCause().equals(EntityDamageEvent.DamageCause.DRAGON_BREATH)) {
+                    e.setDamage(e.getDamage() * 0.1);
+                    if (!e.getEntity().isDead()) {
+                        ((LivingEntity)e.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 6000, 4));
+                        ((LivingEntity)e.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 6000, 4));
+                    }
                 }
             }
         });
