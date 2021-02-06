@@ -29,3 +29,4 @@ target/classes/dev/sqyyy/customitems/event/KillEvent.class
 target/classes/dev/sqyyy/customitems/event/MoveEvent.class
 target/classes/dev/sqyyy/customitems/EventHandler.class
 target/classes/dev/sqyyy/customitems/EventListener.class
+target/classes/dev/sqyyy/customitems/CustomItems$4.class
