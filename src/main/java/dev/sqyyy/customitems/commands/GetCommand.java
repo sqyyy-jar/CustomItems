@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class GetCommand implements CommandExecutor {
     @Override
@@ -12,7 +13,8 @@ public class GetCommand implements CommandExecutor {
         if (sender instanceof Player) {
             if (args.length == 1) {
                 if (!CustomItems.pl.newItems.contains(args[0])) return false;
-                if (CustomItems.getItem((Player)sender, args[0]) != null) ((Player) sender).getInventory().addItem(CustomItems.getItem((Player)sender, args[0]));
+                ItemStack item = CustomItems.getItem(args[0]);
+                if (item != null) ((Player) sender).getInventory().addItem(item);
                 return true;
             }
             return false;
