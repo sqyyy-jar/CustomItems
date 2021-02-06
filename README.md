@@ -32,7 +32,7 @@ Json:
 
 Java:
 ```java
-dev.sqyyy.customitems.EventHandler.setEvent(String itemfilename, new dev.sqyyy.customitems.event.Event() { //use as Event any event in the given package
+dev.sqyyy.customitems.EventHandler.set_____Event(String itemfilename, new dev.sqyyy.customitems.event.Event() { //use as Event any event in the given package
   @Override
   public void onEvent(Player_____Event e, EquipmentSlot slot) {
     //do something...
