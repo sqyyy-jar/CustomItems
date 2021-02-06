@@ -3,7 +3,7 @@ Spigot Plugin to create 1.16+ Custom items with Json
 
 Examples:
 
-```json
+```
 {
   "DisplayName": "The displayname of the item", (use &char to colorize the name)
   "Material": "material of the item", (look up here to find the right materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
