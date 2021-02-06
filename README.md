@@ -1,5 +1,5 @@
 ﻿# CustomItems
-Spigot Plugin to create 1.16+ Custom items with Json
+Spigot Plugin to create 1.16+ Custom items with Json and Java
 
 Examples:
 
@@ -8,9 +8,14 @@ Json:
 {
   "DisplayName": "The displayname of the item", (use &char to colorize the name)
   "Material": "material of the item", (look up here to find the right materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
+  "CustomModelData": 1, (set the items CustomModelData to this value - not necessary)
   "Unbreakable": true|false, (makes the item unbreakable - not necessary)
   "ItemFlags": ["itemflag1", "itemflag2", etc], (adds itemflags from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html to the item - not necessary)
   "Lore": ["line1", "line2", etc], (adds a lore to the item - not necessary)
+  "Recipe": {
+    "shape": [" R ", " R ", " S "], (The shape stands for the 3x3 grid in the craftingtable)
+		"Items": [{"char":'R', "Material": "ROTTEN_FLESH"}, {"char":'S', "Material": "STICK"}] //replace the chars used before with the Materials from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+  }, //not necessary
   "Attributes": [
     {
       "id": "GENERIC_MAX_HEALTH", (Attribute from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html)
