@@ -1,11 +1,14 @@
 package dev.sqyyy.customitems;
 
+import dev.sqyyyapis.storageexplorers.GsonExplorer;
+import dev.sqyyyapis.storageexplorers.GsonFile;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -314,6 +317,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onDeathEvent(PlayerDeathEvent e) {
         Player p = e.getEntity();
+        p.setGravity(true);
         if (p.getInventory().getItemInMainHand().getType() != Material.AIR) {
             ItemStack item = p.getInventory().getItemInMainHand();
             net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
@@ -537,6 +541,20 @@ public class EventListener implements Listener {
                         }
                     }
                 }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent e) {
+        net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(e.getItemInHand());
+        NBTTagCompound nbt = nmsItem.getTag();
+        if (nbt == null) return;
+        if (nbt.hasKey("key"))
+        if (nbt.getString("key") != null || !nbt.getString("key").equals("")) {
+            GsonFile file = GsonExplorer.getGson(CustomItems.path + "items/" + nbt.getString("key") + ".json");
+            if (file.has("AllowBuild")) {
+                e.setCancelled(!file.get("AllowBuild").getAsBoolean());
+            }
         }
     }
 }
