@@ -15,16 +15,16 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class EventListener implements Listener {
-    /*@EventHandler
-    public void onEvent(PlayerEvent e) {
+    @EventHandler
+    public void onEvent(PlayerToggleSneakEvent e) {
         if (e.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
             ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
             net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
             NBTTagCompound nbt = nmsItem.getTag();
             if (nbt != null) {
                 String key = nbt.getString("key");
-                if (dev.sqyyy.customitems.EventHandler.getEventMap().containsKey(key)) {
-                    dev.sqyyy.customitems.EventHandler.getEventMap().get(key).onEvent(e, EquipmentSlot.HAND);
+                if (dev.sqyyy.customitems.EventHandler.getSneakEventMap().containsKey(key)) {
+                    dev.sqyyy.customitems.EventHandler.getSneakEventMap().get(key).onEvent(e, EquipmentSlot.HAND);
                 }
             }
         }
@@ -34,8 +34,8 @@ public class EventListener implements Listener {
             NBTTagCompound nbt = nmsItem.getTag();
             if (nbt != null) {
                 String key = nbt.getString("key");
-                if (dev.sqyyy.customitems.EventHandler.getEventMap().containsKey(key)) {
-                    dev.sqyyy.customitems.EventHandler.getEventMap().get(key).onEvent(e, EquipmentSlot.OFF_HAND);
+                if (dev.sqyyy.customitems.EventHandler.getSneakEventMap().containsKey(key)) {
+                    dev.sqyyy.customitems.EventHandler.getSneakEventMap().get(key).onEvent(e, EquipmentSlot.OFF_HAND);
                 }
             }
         }
@@ -46,8 +46,8 @@ public class EventListener implements Listener {
             NBTTagCompound nbt = nmsItem.getTag();
             if (nbt != null) {
                 String key = nbt.getString("key");
-                if (dev.sqyyy.customitems.EventHandler.getEventMap().containsKey(key)) {
-                    dev.sqyyy.customitems.EventHandler.getEventMap().get(key).onEvent(e, EquipmentSlot.FEET);
+                if (dev.sqyyy.customitems.EventHandler.getSneakEventMap().containsKey(key)) {
+                    dev.sqyyy.customitems.EventHandler.getSneakEventMap().get(key).onEvent(e, EquipmentSlot.FEET);
                 }
             }
         }
@@ -58,8 +58,8 @@ public class EventListener implements Listener {
                 NBTTagCompound nbt = nmsItem.getTag();
                 if (nbt != null) {
                     String key = nbt.getString("key");
-                    if (dev.sqyyy.customitems.EventHandler.getEventMap().containsKey(key)) {
-                        dev.sqyyy.customitems.EventHandler.getEventMap().get(key).onEvent(e, EquipmentSlot.LEGS);
+                    if (dev.sqyyy.customitems.EventHandler.getSneakEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getSneakEventMap().get(key).onEvent(e, EquipmentSlot.LEGS);
                     }
                 }
             }
@@ -70,8 +70,8 @@ public class EventListener implements Listener {
                 NBTTagCompound nbt = nmsItem.getTag();
                 if (nbt != null) {
                     String key = nbt.getString("key");
-                    if (dev.sqyyy.customitems.EventHandler.getEventMap().containsKey(key)) {
-                        dev.sqyyy.customitems.EventHandler.getEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
+                    if (dev.sqyyy.customitems.EventHandler.getSneakEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getSneakEventMap().get(key).onEvent(e, EquipmentSlot.CHEST);
                     }
                 }
             }
@@ -82,12 +82,12 @@ public class EventListener implements Listener {
                 NBTTagCompound nbt = nmsItem.getTag();
                 if (nbt != null) {
                     String key = nbt.getString("key");
-                    if (dev.sqyyy.customitems.EventHandler.getEventMap().containsKey(key)) {
-                        dev.sqyyy.customitems.EventHandler.getEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
+                    if (dev.sqyyy.customitems.EventHandler.getSneakEventMap().containsKey(key)) {
+                        dev.sqyyy.customitems.EventHandler.getSneakEventMap().get(key).onEvent(e, EquipmentSlot.HEAD);
                     }
                 }
             }
-    }*/
+    }
 
     @EventHandler
     public void onInteractEvent(PlayerInteractEvent e) {
