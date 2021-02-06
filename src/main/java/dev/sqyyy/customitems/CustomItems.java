@@ -6,9 +6,6 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import dev.sqyyy.customitems.commands.GetCommand;
-import dev.sqyyy.customitems.event.DamageTakeEvent;
-import dev.sqyyy.customitems.event.InteractEvent;
-import dev.sqyyy.customitems.event.MoveEvent;
 import dev.sqyyyapis.storageexplorers.GsonExplorer;
 import dev.sqyyyapis.storageexplorers.GsonFile;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
@@ -21,9 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -32,9 +26,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -58,7 +49,6 @@ public final class CustomItems extends JavaPlugin {
         commandsInit();
         recipesInit();
         pl = this;
-        testEvents();
     }
 
     private void recipesInit() {
@@ -296,40 +286,5 @@ public final class CustomItems extends JavaPlugin {
         nbt.setString("key", key);
         item = CraftItemStack.asBukkitCopy(nmsItem);
         return item;
-    }
-
-    public final void testEvents() {
-        EventHandler.setMoveEvent("zombie_sword", new MoveEvent() {
-            @Override
-            public void onEvent(PlayerMoveEvent e, EquipmentSlot slot) {
-                if (slot.equals(EquipmentSlot.HAND)) {
-                    Particle.DustOptions dust = new Particle.DustOptions(
-                            Color.fromRGB(180, 68, 32), 1);
-                    e.getPlayer().spawnParticle(Particle.REDSTONE, e.getPlayer().getLocation().getX() + Math.random() - 0.5, e.getPlayer().getLocation().getY(),
-                            e.getPlayer().getLocation().getZ() + Math.random() - 0.5, 0, 0, 0, 0, dust);
-                }
-            }
-        });
-        EventHandler.setInteractEvent("gravity_artifact", new InteractEvent() {
-            @Override
-            public void onEvent(PlayerInteractEvent e, EquipmentSlot slot) {
-                if (slot != EquipmentSlot.HAND) return;
-                e.getPlayer().setGravity(!e.getPlayer().hasGravity());
-                e.setCancelled(true);
-            }
-        });
-        EventHandler.setDamageTakeEvent("dragon_chestplate", new DamageTakeEvent() {
-            @Override
-            public void onEvent(EntityDamageEvent e, EquipmentSlot slot) {
-                if (slot != EquipmentSlot.CHEST) return;
-                if (e.getCause().equals(EntityDamageEvent.DamageCause.DRAGON_BREATH)) {
-                    e.setDamage(e.getDamage() * 0.1);
-                    if (!e.getEntity().isDead()) {
-                        ((LivingEntity)e.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 6000, 4));
-                        ((LivingEntity)e.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 6000, 4));
-                    }
-                }
-            }
-        });
     }
 }
