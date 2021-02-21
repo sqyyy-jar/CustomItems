@@ -10,9 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
 
 public class EventListener implements Listener {
     @EventHandler
@@ -554,6 +557,49 @@ public class EventListener implements Listener {
             GsonFile file = GsonExplorer.getGson(CustomItems.path + "items/" + nbt.getString("key") + ".json");
             if (file.has("AllowBuild")) {
                 e.setCancelled(!file.get("AllowBuild").getAsBoolean());
+            }
+        }
+    }
+
+    @EventHandler
+    public void craftHandling(PrepareItemCraftEvent e) {
+        if (e.getInventory().getResult() == null)
+        if (e.getInventory().getMatrix().length == 9) {
+            for (AdvancedRecipe recipe : AdvancedRecipe.recipes) {
+                ItemChoice[] keys = new ItemChoice[9];
+                for (int i = 0; i < e.getInventory().getMatrix().length; i++) {
+                    if (e.getInventory().getMatrix()[i] == null) {
+                        keys[i] = new ItemChoice("");
+                    } else {
+                        if (recipe.keyedItems[i].isCustom) {
+                            net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(e.getInventory().getMatrix()[i]);
+                            NBTTagCompound nbt = nmsItem.getTag();
+                            if (nbt == null) continue;
+                            if (nbt.get("key") == null) continue;
+                            if (!nbt.hasKey("key")) break;
+                            keys[i] = new ItemChoice(nbt.getString("key"));
+                        } else {
+                            keys[i] = new ItemChoice(e.getInventory().getMatrix()[i].getType());
+                        }
+                    }
+                }
+                int u = 0;
+                for (int i = 0; i < keys.length; i++) {
+                    if (keys[i] == null) break;
+                    if (keys[i].isCustom) {
+                        if (keys[i].key.equalsIgnoreCase(recipe.keyedItems[i].key)) {
+                            u++;
+                        }
+                    } else {
+                        if (keys[i].material.equals(recipe.keyedItems[i].material)) {
+                            u++;
+                        }
+                    }
+                }
+                if (u == 9) {
+                    e.getInventory().setResult(recipe.result);
+                    return;
+                }
             }
         }
     }
