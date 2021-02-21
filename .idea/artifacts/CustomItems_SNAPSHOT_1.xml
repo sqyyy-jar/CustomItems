@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CustomItems-SNAPSHOT-1">
+    <output-path>G:/</output-path>
+    <root id="archive" name="CustomItems-SNAPSHOT-1.jar">
+      <element id="module-output" name="CustomItems" />
+      <element id="library" level="project" name="StorageAPI-1.0-SNAPSHOT" />
+    </root>
+  </artifact>
+</component>
