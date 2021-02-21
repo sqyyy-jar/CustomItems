@@ -17,11 +17,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -48,7 +46,64 @@ public final class CustomItems extends JavaPlugin {
         baseInit();
         commandsInit();
         recipesInit();
+        initSchedulers();
         pl = this;
+    }
+
+    private void initSchedulers() {
+        Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+            @Override
+            public void run() {
+                Bukkit.getOnlinePlayers().forEach(p -> {
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getModifiers().forEach( m -> {
+                        if (m.getName().equalsIgnoreCase("artificial.health"))
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).removeModifier(m);
+                    });
+                    p.getAttribute(Attribute.GENERIC_ARMOR).getModifiers().forEach( m -> {
+                        if (m.getName().equalsIgnoreCase("artificial.armor"))
+                        p.getAttribute(Attribute.GENERIC_ARMOR).removeModifier(m);
+                    });
+                    p.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getModifiers().forEach( m -> {
+                        if (m.getName().equalsIgnoreCase("artificial.damage"))
+                        p.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).removeModifier(m);
+                    });
+                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getModifiers().forEach( m -> {
+                        if (m.getName().equalsIgnoreCase("artificial.speed"))
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).removeModifier(m);
+                    });
+                    List<String> artifacts = new ArrayList<>();
+                    for (ItemStack item : p.getInventory().getContents()) {
+                        net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                        NBTTagCompound nbt = nmsItem.getTag();
+                        if (nbt == null) continue;
+                        if (nbt.getBoolean("artifact")) {
+                            if (artifacts.contains(nbt.getString("key"))) continue;
+                            artifacts.add(nbt.getString("key"));
+                            if (!GsonExplorer.find(path + "items/" + nbt.getString("key") + ".json")) continue;
+                            GsonFile file = GsonExplorer.getGson(path + "items/" + nbt.getString("key") + ".json");
+                            if (!file.has("Modifiers")) continue;
+                            JsonObject obj = file.get("Modifiers").getAsJsonObject();
+                            if (obj.has("Health")) {
+                                double value = obj.get("Health").getAsDouble();
+                                p.getAttribute(Attribute.GENERIC_MAX_HEALTH).addModifier(new AttributeModifier("artificial.health", value, AttributeModifier.Operation.ADD_NUMBER));
+                            }
+                            if (obj.has("Armor")) {
+                                double value = obj.get("Armor").getAsDouble();
+                                p.getAttribute(Attribute.GENERIC_ARMOR).addModifier(new AttributeModifier("artificial.armor", value, AttributeModifier.Operation.ADD_NUMBER));
+                            }
+                            if (obj.has("Damage")) {
+                                double value = obj.get("Damage").getAsDouble();
+                                p.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).addModifier(new AttributeModifier("artificial.damage", value, AttributeModifier.Operation.ADD_NUMBER));
+                            }
+                            if (obj.has("Speed")) {
+                                double value = obj.get("Speed").getAsDouble();
+                                p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).addModifier(new AttributeModifier("artificial.speed", value, AttributeModifier.Operation.ADD_NUMBER));
+                            }
+                        }
+                    }
+                });
+            }
+        }, 40, 40);
     }
 
     private void recipesInit() {
@@ -79,6 +134,24 @@ public final class CustomItems extends JavaPlugin {
                     Bukkit.addRecipe(recipe);
                 } else {
                     System.out.println("ObjectTypeException: caused by items/" + newItem + ".json: \"Slots must be an array!\"");
+                }
+            } else if (f.has("ARecipe")) {
+                if (f.get("ARecipe").isJsonArray()) {
+                    JsonArray array = f.get("ARecipe").getAsJsonArray();
+                    AdvancedRecipe recipe = new AdvancedRecipe(getItem(newItem));
+                    for (int i = 0; i < 9; i++) {
+                        if (array.get(i).getAsString().startsWith("#")) {
+                            recipe.keyedItems[i] = new ItemChoice(array.get(i).getAsString().replaceFirst("#", ""));
+                        } else {
+                            try {
+                                recipe.keyedItems[i] = new ItemChoice(Material.valueOf(array.get(i).getAsString().toUpperCase()));
+                            } catch (IllegalArgumentException exception) {
+                                recipe.keyedItems[i] = new ItemChoice("");
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("ObjectTypeException: caused by items/" + newItem + ".json: \"ARecipe must be an array!\"");
                 }
             }
         }
@@ -155,7 +228,11 @@ public final class CustomItems extends JavaPlugin {
             public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
                 List<String> completions = new ArrayList<>();
                 if (sender instanceof Player) {
-                    completions.addAll(newItems);
+                    for (String newItem : newItems) {
+                        if (newItem.contains(args[0].toLowerCase())) {
+                            completions.add(newItem);
+                        }
+                    }
                 }
                 return completions;
             }
@@ -248,6 +325,21 @@ public final class CustomItems extends JavaPlugin {
                 System.out.println("ObjectTypeException: caused by items/" + key + ".json: \"Lore must be an array!\"");
             }
         }
+        if (file.has("Enchants")) {
+            if (file.get("Enchants").isJsonArray()) {
+                for (JsonElement param : file.get("Enchants").getAsJsonArray()) {
+                    if (param.isJsonObject()) {
+                        JsonObject obj = param.getAsJsonObject();
+                        NamespacedKey.minecraft(obj.get("id").getAsString());
+                        meta.addEnchant(Enchantment.getByKey(NamespacedKey.minecraft(obj.get("id").getAsString())), obj.get("lvl").getAsInt(), false);
+                    } else {
+                        System.out.println("ObjectTypeException: caused by items/" + key + ".json: \"Enchants must be an array within objects!\"");
+                    }
+                }
+            } else {
+                System.out.println("ObjectTypeException: caused by items/" + key + ".json: \"Enchants must be an array!\"");
+            }
+        }
         item.setItemMeta(meta);
         if (item.getType().equals(Material.PLAYER_HEAD)) {
             if (file.has("texture")) {
@@ -284,6 +376,9 @@ public final class CustomItems extends JavaPlugin {
         NBTTagCompound nbt = nmsItem.getTag();
         if (nbt == null) return null;
         nbt.setString("key", key);
+        if (file.has("Artifact")) {
+            if (file.get("Artifact").getAsBoolean()) nbt.setBoolean("artifact", true);
+        }
         item = CraftItemStack.asBukkitCopy(nmsItem);
         return item;
     }
