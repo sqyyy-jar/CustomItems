@@ -30,3 +30,7 @@ target/classes/dev/sqyyy/customitems/event/MoveEvent.class
 target/classes/dev/sqyyy/customitems/EventHandler.class
 target/classes/dev/sqyyy/customitems/EventListener.class
 target/classes/dev/sqyyy/customitems/CustomItems$4.class
+.idea/artifacts/CustomItems_SNAPSHOT_1_1.xml
+target/classes/dev/sqyyy/customitems/AdvancedRecipe.class
+target/classes/dev/sqyyy/customitems/event/SneakEvent.class
+target/classes/dev/sqyyy/customitems/ItemChoice.class
